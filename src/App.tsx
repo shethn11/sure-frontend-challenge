@@ -7,27 +7,36 @@ import Layout from './components/Layout';
 import { useState } from 'react';
 import Modal from './components/Modal';
 import Instructions from './components/Instructions';
+import PolicyholdersView from './components/PolicyholdersView';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const queryClient = new QueryClient();
+
   return (
     <BrowserRouter>
-      <Layout onFooterClick={() => setIsModalOpen(true)}>
-        <Routes>
-          <Route path="/" element={<HomeView />} />
-          <Route path="/table" element={<TableDemoView />} />
-          <Route path="/you-can-do-it" element={<YouCanDoItView />} />
-          <Route path="*" element={<RedirectView />} />
-        </Routes>
-      </Layout>
-      <Modal
-        isOpen={isModalOpen}
-        handleClose={() => setIsModalOpen(false)}
-        title="Sure Technical Challenge"
-      >
-        <Instructions />
-      </Modal>
+      <QueryClientProvider client={queryClient}>
+          <Layout onFooterClick={() => setIsModalOpen(true)}>
+            <Routes>
+              <Route path="/" element={<HomeView />} />
+              <Route path="/policyholders" element={<PolicyholdersView />} />
+              <Route path="/table" element={<TableDemoView />} />
+              <Route path="/you-can-do-it" element={<YouCanDoItView />} />
+              <Route path="*" element={<RedirectView />} />
+            </Routes>
+          </Layout>
+          <Modal
+            isOpen={isModalOpen}
+            handleClose={() => setIsModalOpen(false)}
+            title="Sure Technical Challenge"
+          >
+            <Instructions />
+          </Modal>
+          <ReactQueryDevtools />
+      </QueryClientProvider>
     </BrowserRouter>
   );
 }
