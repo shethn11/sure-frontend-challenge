@@ -1,5 +1,6 @@
 import { Link, Box } from '@mui/material';
-import { Link as RouterLink } from 'react-router-dom';
+import { useState } from 'react';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
 type TNavBar = {
   links: {
     text: string;
@@ -9,6 +10,9 @@ type TNavBar = {
 };
 
 function NavBar({ links }: TNavBar) {
+  const location = useLocation();
+  const [currentPage, setCurrentPage] = useState(location.pathname);
+
   return (
     <Box
       component="aside"
@@ -24,29 +28,36 @@ function NavBar({ links }: TNavBar) {
       <Link
         component={RouterLink}
         to="/"
+        onClick={() => setCurrentPage('/')}
         sx={{ cursor: 'pointer', marginBottom: '80px', marginTop: '40px' }}
       >
         <img src="/surelogo.svg" alt="logo"></img>
       </Link>
 
-      {links.map(({ text, href, 'data-testid': dataTestId }) => (
-        <Link
-          component={RouterLink}
-          key={href}
-          to={href}
-          color="#fff"
-          underline="hover"
-          sx={{
-            cursor: 'pointer',
-            '&:not(:last-of-type)': {
-              marginBottom: '16px',
-            },
-          }}
-          data-testid={dataTestId}
-        >
-          {text}
-        </Link>
-      ))}
+      {links.map(({ text, href, 'data-testid': dataTestId }) => 
+      {
+        const activeLink = currentPage === href;
+        return <Link
+              component={RouterLink}
+              key={href}
+              to={href}
+              color="#fff"
+              underline="hover"
+              fontWeight={activeLink ? "bolder" : "normal"}
+              sx={{
+                cursor: 'pointer',
+                '&:not(:last-of-type)': {
+                  marginBottom: '16px',
+                },
+              }}
+              data-testid={dataTestId}
+              onClick={() => setCurrentPage(href)}
+              aria-current={activeLink ? "page" : false}
+            >
+              {text}
+            </Link>
+        }
+      )}
     </Box>
   );
 }
